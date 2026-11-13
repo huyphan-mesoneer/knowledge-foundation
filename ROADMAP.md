@@ -56,6 +56,7 @@ Questions:
 - [ ] Folders vs. properties vs. tags: what is each one used for (one job each)?
 - [ ] Where do role-specific docs live (PRD, spec, runbook, incident): inside the project, in knowledge, in records?
 - [ ] Hubs: project notes, area notes, MOCs — which are mandatory, and must every note link to one?
+  - Draft proposal: [[design/linking|Linking guidelines]] §4
 - [ ] Naming conventions: date prefixes, type prefixes (`DEC`, `INC`, `RUNBOOK`), allowed characters, language (EN only?)
 - [ ] Inbox policy: everything lands in inbox first? Max age before processing?
 - [ ] Archive policy: when and how notes are archived; is deleting ever allowed?
@@ -136,6 +137,7 @@ Principle to agree on: **one schema, two paths** — humans get the template thr
 - [ ] Quality bar: TL;DR line, one idea per note, link to a hub, no secrets / personal data
 - [ ] Standard agent workflows to support: capture, process inbox, daily start, meeting → decisions/tasks, weekly review, debug-log → how-to, close project
 - [ ] How rules are delivered: `AGENTS.md` only, plus tool-specific skills (Claude), plus rules inside each template (comments)?
+- [ ] Linking rules for humans and agents — see draft [[design/linking|Linking guidelines]] (granularity, hub rule, backlink discovery, renaming, search strategy)
 
 ### 1.8 Exit criteria for Phase 1
 - [ ] All items above have a decision in the log
