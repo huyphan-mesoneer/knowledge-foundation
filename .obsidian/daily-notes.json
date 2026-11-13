@@ -1,0 +1,6 @@
+{
+  "folder": "10-journal/daily",
+  "format": "YYYY-MM-DD",
+  "template": "_system/templates/tpl-daily",
+  "autorun": false
+}

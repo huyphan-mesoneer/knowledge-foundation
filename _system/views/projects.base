@@ -1,0 +1,28 @@
+filters:
+  and:
+    - type == "project"
+    - '!file.inFolder("90-archive")'
+views:
+  - type: table
+    name: Active
+    filters:
+      or:
+        - status == "active"
+        - status == "planned"
+        - status == "paused"
+    order:
+      - file.name
+      - status
+      - owner
+      - due
+      - updated
+    sort:
+      - property: due
+        direction: ASC
+  - type: table
+    name: All
+    order:
+      - file.name
+      - status
+      - area
+      - due

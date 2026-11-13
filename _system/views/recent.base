@@ -1,0 +1,17 @@
+filters:
+  and:
+    - file.ext == "md"
+    - '!file.inFolder("_system")'
+    - '!file.inFolder("90-archive")'
+views:
+  - type: table
+    name: Recently changed
+    limit: 15
+    order:
+      - file.name
+      - type
+      - author
+      - file.mtime
+    sort:
+      - property: file.mtime
+        direction: DESC

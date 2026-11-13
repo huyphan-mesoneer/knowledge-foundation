@@ -1,0 +1,15 @@
+filters:
+  and:
+    - file.inFolder("00-inbox")
+    - file.ext == "md"
+views:
+  - type: table
+    name: Inbox (oldest first)
+    order:
+      - file.name
+      - created
+      - source
+      - author
+    sort:
+      - property: created
+        direction: ASC

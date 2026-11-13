@@ -1,0 +1,47 @@
+filters:
+  or:
+    - type == "decision"
+    - type == "incident"
+    - type == "debug-log"
+views:
+  - type: table
+    name: Open
+    filters:
+      or:
+        - status == "proposed"
+        - status == "open"
+        - status == "mitigated"
+    order:
+      - file.name
+      - type
+      - status
+      - created
+    sort:
+      - property: created
+        direction: DESC
+  - type: table
+    name: Decisions
+    filters:
+      and:
+        - type == "decision"
+    order:
+      - file.name
+      - status
+      - deciders
+      - created
+    sort:
+      - property: created
+        direction: DESC
+  - type: table
+    name: Incidents
+    filters:
+      and:
+        - type == "incident"
+    order:
+      - file.name
+      - severity
+      - status
+      - services
+    sort:
+      - property: created
+        direction: DESC

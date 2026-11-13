@@ -1,0 +1,30 @@
+# ── Obsidian: per-device / per-user state ──────────────────────────
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspaces.json
+.obsidian/graph.json
+.obsidian/cache
+.obsidian/plugins/*/data.json.bak
+.trash/
+
+# ── Personal, never shared ─────────────────────────────────────────
+_private/*
+!_private/.gitkeep
+
+# ── OS / editor junk ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.vscode/
+.idea/
+
+# ── Tooling ────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+
+# ── Local agent settings (shared skills in .claude/skills stay tracked) ─
+.claude/settings.local.json

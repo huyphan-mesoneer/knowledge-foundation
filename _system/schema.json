@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "description": "Single source of truth for note types. Read by humans, AI agents, new_note.py and lint.py.",
+  "required": ["type", "created"],
+  "optional": ["status", "updated", "author", "tags", "related", "aliases", "source", "roles", "visibility"],
+  "inbox_max_age_days": 7,
+  "types": {
+    "inbox":     {"folder": "00-inbox",           "filename": "{{date:YYYY-MM-DD}} {{title}}", "template": "tpl-inbox",     "status": ["new"],                                   "purpose": "Unprocessed capture. Anything goes. Must be processed within a week."},
+    "daily":     {"folder": "10-journal/daily",   "filename": "{{date:YYYY-MM-DD}}",           "template": "tpl-daily",     "purpose": "Daily focus, log and quick capture."},
+    "weekly":    {"folder": "10-journal/weekly",  "filename": "{{date:GGGG-[W]WW}}",           "template": "tpl-weekly",    "purpose": "Weekly review: process inbox, reflect, plan."},
+    "project":   {"folder": "20-projects/{{title}}", "filename": "{{title}}",                  "template": "tpl-project",   "status": ["planned", "active", "paused", "done", "cancelled"], "required": ["status"], "purpose": "Time-bound effort with a clear outcome. Hub note of a project folder."},
+    "prd":       {"folder": "20-projects/{{project}}", "filename": "PRD {{title}}",            "template": "tpl-prd",       "status": ["draft", "review", "approved", "shipped"], "project_bound": true, "purpose": "Product requirements (PO/PM)."},
+    "story":     {"folder": "20-projects/{{project}}", "filename": "STORY {{title}}",          "template": "tpl-story",     "status": ["draft", "ready", "in-progress", "done"],  "project_bound": true, "purpose": "User story with acceptance criteria (PO/PM)."},
+    "spec":      {"folder": "20-projects/{{project}}", "filename": "SPEC {{title}}",           "template": "tpl-spec",      "status": ["draft", "review", "approved", "implemented"], "project_bound": true, "purpose": "Technical design / RFC (engineering)."},
+    "area":      {"folder": "30-areas",           "filename": "{{title}}",                     "template": "tpl-area",      "status": ["active", "retired"],                      "purpose": "Ongoing responsibility with no end date (a role, a system, a domain)."},
+    "note":      {"folder": "40-knowledge",       "filename": "{{title}}",                     "template": "tpl-note",      "status": ["seedling", "growing", "evergreen"],       "purpose": "Atomic concept / insight. One idea per note."},
+    "howto":     {"folder": "40-knowledge",       "filename": "How to {{title}}",              "template": "tpl-howto",     "status": ["draft", "verified", "outdated"],          "purpose": "Repeatable procedure."},
+    "runbook":   {"folder": "40-knowledge",       "filename": "RUNBOOK {{title}}",             "template": "tpl-runbook",   "status": ["draft", "verified", "outdated"],          "purpose": "Operational response for a system/alert (devops/SRE)."},
+    "reference": {"folder": "40-knowledge",       "filename": "{{title}}",                     "template": "tpl-reference", "status": ["to-read", "reading", "done"],             "purpose": "Summary of an external source: article, book, talk, doc."},
+    "moc":       {"folder": "40-knowledge",       "filename": "MOC {{title}}",                 "template": "tpl-moc",       "purpose": "Map of content: curated index linking notes on a topic."},
+    "meeting":   {"folder": "50-meetings",        "filename": "{{date:YYYY-MM-DD}} {{title}}", "template": "tpl-meeting",   "purpose": "Meeting notes with decisions and action items."},
+    "decision":  {"folder": "60-records",         "filename": "{{date:YYYY-MM-DD}} DEC {{title}}", "template": "tpl-decision", "status": ["proposed", "accepted", "rejected", "superseded"], "required": ["status"], "purpose": "Decision record (ADR). Immutable once accepted; supersede instead of editing."},
+    "incident":  {"folder": "60-records",         "filename": "{{date:YYYY-MM-DD}} INC {{title}}", "template": "tpl-incident", "status": ["open", "mitigated", "resolved", "reviewed"], "required": ["status"], "purpose": "Incident and postmortem (devops/SRE)."},
+    "debug-log": {"folder": "60-records",         "filename": "{{date:YYYY-MM-DD}} DBG {{title}}", "template": "tpl-debug-log", "status": ["open", "solved", "abandoned"], "purpose": "Investigation diary for a bug or problem (engineering)."},
+    "person":    {"folder": "70-people",          "filename": "{{title}}",                     "template": "tpl-person",    "purpose": "A person or team you work with."}
+  },
+  "roles": {
+    "everyone":    {"areas": ["Career and growth", "Learning"],                     "templates": ["note", "howto", "reference", "meeting", "decision", "project", "person"]},
+    "product":     {"areas": ["Product strategy", "Backlog and discovery", "Stakeholders"], "templates": ["prd", "story"]},
+    "engineering": {"areas": ["Codebase and architecture", "Engineering practices"], "templates": ["spec", "debug-log"]},
+    "devops":      {"areas": ["Infrastructure", "On-call and reliability"],          "templates": ["runbook", "incident"]},
+    "qa":          {"areas": ["Quality and testing"],                                "templates": ["story", "debug-log"]},
+    "design":      {"areas": ["Design system", "User research"],                     "templates": ["prd", "reference"]},
+    "management":  {"areas": ["Team and people", "Planning and reporting"],          "templates": ["decision", "person"]}
+  }
+}

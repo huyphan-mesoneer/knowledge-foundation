@@ -1,0 +1,10 @@
+filters:
+  and:
+    - type == "area"
+    - status == "active"
+views:
+  - type: cards
+    name: Areas
+    order:
+      - file.name
+      - roles

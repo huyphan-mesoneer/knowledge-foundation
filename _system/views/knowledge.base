@@ -1,0 +1,36 @@
+filters:
+  and:
+    - file.inFolder("40-knowledge")
+views:
+  - type: table
+    name: All knowledge
+    order:
+      - file.name
+      - type
+      - status
+      - updated
+    sort:
+      - property: updated
+        direction: DESC
+  - type: table
+    name: Needs care
+    filters:
+      or:
+        - status == "seedling"
+        - status == "draft"
+        - status == "outdated"
+    order:
+      - file.name
+      - type
+      - status
+      - updated
+  - type: table
+    name: Runbooks
+    filters:
+      and:
+        - type == "runbook"
+    order:
+      - file.name
+      - service
+      - status
+      - last_verified

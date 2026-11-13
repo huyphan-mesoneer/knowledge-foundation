@@ -1,0 +1,14 @@
+filters:
+  and:
+    - type == "meeting"
+views:
+  - type: table
+    name: Meetings
+    limit: 50
+    order:
+      - file.name
+      - project
+      - attendees
+    sort:
+      - property: created
+        direction: DESC
