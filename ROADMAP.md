@@ -1,11 +1,11 @@
 ---
 created: 2026-11-13
-updated: 2026-11-13
+updated: 2026-11-19
 owner: Huy Phan
 ---
 # 🗺️ Roadmap — knowledge-foundation
 
-Goal: an Obsidian vault template that anyone (PO, engineer, DevOps, QA, designer, manager) can bootstrap and keep using for **team and personal knowledge**, written and maintained by **humans and AI agents** with the same result.
+Goal: an Obsidian vault template that anyone (PO, engineer, DevOps, QA, designer, manager) can bootstrap and keep using for **personal knowledge** (one private vault per person; shared team vaults are out of scope for v1, see D2), written and maintained by **humans and AI agents** with the same result.
 
 **How to use this file:** it is the single progress overview. Tick `[x]` when an item is agreed/done, write the outcome in the [[#Decision log]], and bump `updated`. Agents may tick items only when the owner confirmed the decision in conversation.
 
@@ -37,12 +37,23 @@ A first draft exists in this repo (folders, 18 templates in `_system/templates/`
 Output of this phase: a written decision for every item below (in the [[#Decision log]]). Items are ordered; later ones depend on earlier ones.
 
 ### 1.1 Principles & scope
-- [ ] Who is the primary user for v1: individual (personal vault) / team (shared repo) / both
-- [ ] Same template for personal and team, or one core + two profiles?
-- [ ] What must stay private in team mode (journal, 1:1s, people notes)?
-- [ ] Agent-agnostic (any AI tool via `AGENTS.md`) vs. optimized for one tool (Claude Code)
-- [ ] Desktop only, or must it work on mobile too (affects plugin choice)
-- [ ] Success criteria for v1 (e.g. "a new person is productive in 15 min", "agent notes indistinguishable in structure from human notes")
+- [x] Who is the primary user for v1: individual (personal vault) / team (shared repo) / both → **individual only** (D2)
+- [x] Same template for personal and team, or one core + two profiles? → **one template, no team profile** (D3)
+- [x] What must stay private in team mode (journal, 1:1s, people notes)? → **n/a — the whole vault is private to its owner** (D4)
+- [x] Agent-agnostic (any AI tool via `AGENTS.md`) vs. optimized for one tool (Claude Code) → **agnostic, Claude extras optional** (D5)
+- [x] Desktop only, or must it work on mobile too (affects plugin choice) → **desktop for writing, mobile read-only** (D6)
+- [x] Success criteria for v1 → **S1–S6 below** (D7)
+
+**v1 success criteria (D7)** — measured in the Phase 2 review and the Phase 4 pilot:
+
+| # | Criterion | How it's measured |
+|---|---|---|
+| S1 | A new user creates 3 correctly typed notes within 15 min of cloning, without help | Pilot onboarding session |
+| S2 | The same 5 note types, created by a human and by an agent, have identical structure (same properties, same headings) | Phase 2 conformance review |
+| S3 | Pilot users still use it in week 3: ≥ 5 notes/week each, nothing in the inbox older than 7 days | Count notes in the vault |
+| S4 | A person or agent answers 5 "where is X / what did we decide about Y" questions in < 2 min each | Pilot exercise |
+| S5 | No agent safety violations (no deletes, no rewrites of human prose, no secrets written) | Review the agent log and git diff |
+| S6 | No more than **5** community plugins in the default stack | Plugin count |
 
 ### 1.2 Note-taking method & vault structure
 Options to compare:
@@ -117,7 +128,7 @@ Principle to agree on: **one schema, two paths** — humans get the template thr
 | Dashboards / queries | core **Bases** (prefer), Dataview | Bases only reads frontmatter → everything queryable must be a property |
 | Tasks across notes | Tasks plugin, or core only | Only if 1.5 keeps tasks in the vault |
 | Daily/weekly notes | core Daily notes, Periodic Notes | Weekly needs a plugin or a QuickAdd choice |
-| Sync / version control | Obsidian Git, Obsidian Sync, iCloud | Team mode → Git |
+| Sync / version control | Obsidian Git, Obsidian Sync, iCloud | Personal only (D2); mobile is read-only (D6) — sync just needs to deliver notes to the phone |
 
 - [ ] Minimal set of plugins (every extra plugin = onboarding + maintenance cost); candidate stacks:
   - **Lean:** core only (Templates, Daily notes, Properties, Bases) + Linter
@@ -158,11 +169,11 @@ Principle to agree on: **one schema, two paths** — humans get the template thr
 - [ ] Bootstrap (new vault from template, choose roles/mode)
 - [ ] Validator (properties, folders, links, stale inbox) usable by agents and CI
 - [ ] Agent skills/commands for the standard workflows
-- [ ] CI for team vaults
+- [ ] ~~CI for team vaults~~ — dropped, no team vaults in v1 (D2)
 - [ ] Re-evaluate the parked Phase 0 scripts against Phase 1–2 decisions
 
 ## Phase 4 — Pilot ⬜
-- [ ] Pilot users: PO, engineer, DevOps (+ one personal-only user)
+- [ ] Pilot users: PO, engineer, DevOps — each with their own personal vault (D2)
 - [ ] 2–3 weeks real use with an agent; collect friction log
 - [ ] Adjust templates/rules; measure success criteria from 1.1
 
@@ -176,8 +187,16 @@ Principle to agree on: **one schema, two paths** — humans get the template thr
 | # | Date | Topic | Decision | Why |
 |---|---|---|---|---|
 | D1 | 2026-11-13 | Process | Phase 1 is discussion only — no code/scripts until templates and rules are agreed | Avoid building tooling around unagreed structure |
+| D2 | 2026-11-19 | 1.1 Primary user | v1 targets individuals only: one personal vault per person, nothing shared | Personal habit comes first; sharing adds Git, privacy and convention overhead that v1 doesn't need |
+| D3 | 2026-11-19 | 1.1 Profiles | One template, no team profile (the prototype's `mode: personal\|team` goes away) | Follows from D2; fewer variants to maintain |
+| D4 | 2026-11-19 | 1.1 Privacy | The whole vault is private to its owner; no team/private split | Follows from D2. Whether a separate `_private/` area (off-limits to agents) is still needed is moved to 1.2/1.7 |
+| D5 | 2026-11-19 | 1.1 Agents | Agent-agnostic: `AGENTS.md` is the only source of rules; tool-specific skills (Claude) are thin wrappers that add no rules. Every rule must be followable with plain Markdown read/write, no scripts | Works with any AI tool; scripts are optional speed-ups (Phase 3) |
+| D6 | 2026-11-19 | 1.1 Platform | Desktop is the only place notes are written; mobile is read-only (no mobile capture) | Plugins don't need mobile support, which widens the choice in 1.6 |
+| D7 | 2026-11-19 | 1.1 Success criteria | Adopt S1–S6 (see 1.1), with S6 = max 5 community plugins | Measurable and checked in the Phase 2 review / Phase 4 pilot; keeps adoption cost low |
 
 ## Open questions / parking lot
 - Should the vault support multiple languages (e.g. EN + VI notes)?
 - Integration with Jira/Confluence: link only, or sync?
-- Team vault size: one vault per team or per organization?
+- ~~Team vault size: one vault per team or per organization?~~ — moot after D2
+- Prototype `AGENTS.md` says "always create notes with the script", which conflicts with D1/D5 — rewrite in Phase 2
+- How (if at all) people share a note from their personal vault with others later (export, copy to Confluence, …) — post-v1
