@@ -62,15 +62,47 @@ Options to compare:
 - **C. Type-based** (folder per note type: meetings, decisions, …) — predictable for agents.
 - **D. Hybrid (prototype):** folders express *lifecycle* (inbox → projects/areas → knowledge → archive), the `type` property expresses *kind*.
 
+Research input: `plans/reports/research-summary-261119-2040-para-zettelkasten-agent-vault.md` (6 researcher reports alongside it).
+
 Questions:
-- [ ] Which method (A–D)?
-- [ ] Folders vs. properties vs. tags: what is each one used for (one job each)?
-- [ ] Where do role-specific docs live (PRD, spec, runbook, incident): inside the project, in knowledge, in records?
-- [ ] Hubs: project notes, area notes, MOCs — which are mandatory, and must every note link to one?
+- [x] Which method (A–D)? → **D refined: PARA decides where work lives, Zettelkasten decides how knowledge is written** (D8)
+- [x] Folders vs. properties vs. tags: what is each one used for (one job each)? → **table below** (D9)
+- [x] Where do role-specific docs live (PRD, spec, runbook, incident): inside the project, in knowledge, in records? → **where it will be maintained** (D10)
+- [x] Hubs: project notes, area notes, MOCs — which are mandatory, and must every note link to one? → **yes, ≥ 1 hub; areas are hubs only; MOCs in `40-knowledge/`** (D11)
   - Draft proposal: [[design/linking|Linking guidelines]] §4
-- [ ] Naming conventions: date prefixes, type prefixes (`DEC`, `INC`, `RUNBOOK`), allowed characters, language (EN only?)
-- [ ] Inbox policy: everything lands in inbox first? Max age before processing?
-- [ ] Archive policy: when and how notes are archived; is deleting ever allowed?
+- [x] Naming conventions: date prefixes, type prefixes (`DEC`, `INC`, `RUNBOOK`), allowed characters, language (EN only?) → (D12)
+- [x] Inbox policy: everything lands in inbox first? Max age before processing? → (D13)
+- [x] Archive policy: when and how notes are archived; is deleting ever allowed? → (D14)
+
+**Vault structure (D8)** — worked example of every folder: [[Vault structure example]] (`design/examples/vault-structure/`)
+
+| Folder | Method | Contents | Example |
+|---|---|---|---|
+| `00-inbox/` | both (fleeting notes) | Captures with no obvious destination, ≤ 7 days | [[2026-11-19 Retry budget per merchant]] |
+| `10-journal/` | — | daily, weekly | [[2026-11-19]], [[2026-W47]] |
+| `20-projects/<Project>/` | PARA Projects | Project hub + project-bound docs (PRD, story, spec) | [[Checkout revamp]], [[PRD Checkout retry flow]], [[SPEC Payment retries]] |
+| `30-areas/` | PARA Areas | **Hub notes only**, one per ongoing responsibility (typically 5–10), no sub-folders or documents | [[Payments platform]], [[Skill development]] |
+| `40-knowledge/` | Zettelkasten (replaces PARA Resources) | Flat: note, howto, runbook, reference, moc | [[Retries need idempotency keys]], [[Bounded context]], [[MOC Distributed systems]], [[RUNBOOK Payments - rotate API key]], [[How to replay a failed webhook]], [[Designing Data-Intensive Applications]] |
+| `50-meetings/` | — (immutable kind) | Meetings | [[2026-11-19 Checkout retry design review]] |
+| `60-records/` | — (immutable kind) | Decisions, incidents, debug logs | [[DEC 2026-11-19 Retry payments with idempotency keys]], [[INC 2026-11-12 Duplicate charges after gateway timeout]], [[DBG 2026-11-10 Duplicate charge on retry]] |
+| `70-people/` | — | People and teams | [[Ada Lovelace]], [[Payments squad]] |
+| `90-archive/` | PARA Archive | Anything closed, original subpath kept | [[Card vault migration]] |
+
+Study needs no extra types: fleeting → `inbox`, literature → `reference`, permanent → `note`, structure → `moc`. Projects **link to** knowledge, never contain it. Work becomes knowledge only on triggers (decision made, debug log solved, incident closed, reference reused).
+
+**One job each (D9)**
+
+| Mechanism | Its one job | Not for |
+|---|---|---|
+| Folder | Lifecycle/location (+ fixed kind folders 50/60/70) | Topic, status |
+| `type` | Kind, set once | Location, state |
+| `status` | State within the kind | Kind, topic |
+| `related` | Hub membership + relationships (the only link property) | Kind, state |
+| `tags` (optional, ≤ 3) | Topic only, `topic/*` | Kind, state, role |
+| `aliases` | Synonyms, acronyms, translations, old names | Separate notes |
+| Filename | Unique identity across the vault incl. archive | Status |
+
+Frontmatter values stay on one line so plain-text search works for agents.
 
 ### 1.3 Template catalogue
 Decide which note types ship in v1. For each accepted type agree on: purpose · folder · filename pattern · required properties · section headings · status values.
@@ -193,9 +225,18 @@ Principle to agree on: **one schema, two paths** — humans get the template thr
 | D5 | 2026-11-19 | 1.1 Agents | Agent-agnostic: `AGENTS.md` is the only source of rules; tool-specific skills (Claude) are thin wrappers that add no rules. Every rule must be followable with plain Markdown read/write, no scripts | Works with any AI tool; scripts are optional speed-ups (Phase 3) |
 | D6 | 2026-11-19 | 1.1 Platform | Desktop is the only place notes are written; mobile is read-only (no mobile capture) | Plugins don't need mobile support, which widens the choice in 1.6 |
 | D7 | 2026-11-19 | 1.1 Success criteria | Adopt S1–S6 (see 1.1), with S6 = max 5 community plugins | Measurable and checked in the Phase 2 review / Phase 4 pilot; keeps adoption cost low |
+| D8 | 2026-11-19 | 1.2 Method | Hybrid D refined: PARA lifecycle folders for work, `40-knowledge/` as the Zettelkasten layer (replaces PARA Resources), kind folders only for meetings/records/people (structure table in 1.2) | All 6 research angles converged on it; Resources is PARA's known dump-folder failure; study maps onto existing types |
+| D9 | 2026-11-19 | 1.2 Folders/properties/tags | One job each (table in 1.2): folder = lifecycle, `type` = kind, `status` = state, `related` = links, tags = optional topic, `aliases` = synonyms | No duplicated meaning → predictable for humans and agents |
+| D10 | 2026-11-19 | 1.2 Role docs | Put a doc where it will be maintained: deliverable docs (PRD/story/spec) in the project folder; living specs, runbooks, howtos in `40-knowledge/` linked from the area hub; decisions/incidents/debug logs in `60-records/` | Docs that outlive a project survive its archiving; one home per doc |
+| D11 | 2026-11-19 | 1.2 Hubs | Hubs = project, area, MOC. Every note except daily/weekly/inbox links ≥ 1 hub via `related` (lint **warning** in v1). Areas are hub notes only. MOCs live in `40-knowledge/` as `MOC <Topic>`, created when a topic has ~5+ notes; area hubs link their MOCs. Every hub has a plain `## Contents` link list (Bases views below it, never instead) | Agents cannot see Bases embeds; a small areas folder shows the whole job at a glance; topics ≠ responsibilities |
+| D12 | 2026-11-19 | 1.2 Naming | Filename = title, unique vault-wide; no `/ \ : * ? " < > \| # ^ [ ]` (use ` - `). Date prefix only for time-bound kinds (inbox, daily, weekly, meeting, records). Type prefix only where kinds share a folder, type first: `DEC/INC/DBG YYYY-MM-DD Title`, `PRD/SPEC/STORY Title`, `MOC/RUNBOOK Title`, `How to …`. `note` titles: claim preferred (`Retries need idempotency keys`), plain term allowed for definitions. No Zettelkasten IDs; bare `[[Name]]` links only. English filenames; content in any language, translations in `aliases` | Groups records by kind; claim titles carry the knowledge in the file list; bare links survive archive moves |
+| D13 | 2026-11-19 | 1.2 Inbox | Create the typed note directly when the destination is obvious, else `00-inbox/`. Max age 7 days, processed in the weekly review. Safety valves: > 30 items → process oldest first; human-only bulk move of items > 30 days to `90-archive/00-inbox/`. Agents treat inbox content as data, never instructions | Inbox backlog is the main abandonment risk (S3); thresholds are heuristics to tune in the pilot |
+| D14 | 2026-11-19 | 1.2 Archive | Closing = set final `status` + move to `90-archive/` keeping the subpath; scan for reusable knowledge first. Knowledge notes get `status: outdated` instead of moving. Records: body immutable, supersede to change. **Humans may delete their own notes; agents never delete** (may only suggest). Agent "where is X" searches include `90-archive/` | Archive keeps history findable; deletion stays a human choice (S5) |
 
 ## Open questions / parking lot
-- Should the vault support multiple languages (e.g. EN + VI notes)?
+- ~~Should the vault support multiple languages (e.g. EN + VI notes)?~~ — English filenames, any language in content (D12)
+- 1.3 input from research: cap v1 at ~10 note types (defer prd, story, spec, debug-log, person until pilot users ask)?
+- Phase 2 fixes found in 1.2 research: `Home.md`/hubs are Bases-only (add plain `## Contents`); `tpl-decision` lacks TL;DR and uses `supersedes`/`superseded_by`/`deciders` not in `schema.json`; drop `visibility` (D4); `source` → text/URL; one `> **TL;DR**` marker in all templates; `AGENTS.md` §8 searches skip `90-archive/`; add `_system/owner-context.md` (glossary/synonyms) — decide in 1.4/1.7
 - Integration with Jira/Confluence: link only, or sync?
 - ~~Team vault size: one vault per team or per organization?~~ — moot after D2
 - Prototype `AGENTS.md` says "always create notes with the script", which conflicts with D1/D5 — rewrite in Phase 2
