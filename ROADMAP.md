@@ -138,6 +138,7 @@ Decide which note types ship in v1. For each accepted type agree on: purpose · 
 - [ ] Value formats: dates (`YYYY-MM-DD`), links in properties (`"[[Note]]"`), lists, people (`[[Person]]` vs text)
 - [ ] Tags: taxonomy (e.g. `topic/…`, `role/…`), or tags kept minimal and properties used instead?
 - [ ] Provenance: how to mark who wrote a note (`author: human` / `agent:<name>`) and who last changed it
+- [x] Trust signal for agents → optional `reviewed: YYYY-MM-DD`, set by the owner only; no hard gate (D15)
 - [ ] Where the schema is documented as the single source of truth (Markdown doc? fileClass notes? JSON?) — depends on 1.6
 
 ### 1.5 How humans take notes (workflow)
@@ -180,6 +181,9 @@ Principle to agree on: **one schema, two paths** — humans get the template thr
 - [ ] Quality bar: TL;DR line, one idea per note, link to a hub, no secrets / personal data
 - [ ] Standard agent workflows to support: capture, process inbox, daily start, meeting → decisions/tasks, weekly review, debug-log → how-to, close project
 - [ ] How rules are delivered: `AGENTS.md` only, plus tool-specific skills (Claude), plus rules inside each template (comments)?
+- [x] Trust: source ranking + marking unreviewed agent content (D15)
+- [x] Search strategy: grep + agent synonyms + glossary + aliases learned from misses; semantic search only on pilot evidence (D16)
+- [x] Duplicates: no two knowledge notes on the same idea; merge, keep old title as alias (D17)
 - [ ] Linking rules for humans and agents — see draft [[design/linking|Linking guidelines]] (granularity, hub rule, backlink discovery, renaming, search strategy)
 
 ### 1.8 Exit criteria for Phase 1
@@ -208,6 +212,8 @@ Principle to agree on: **one schema, two paths** — humans get the template thr
 - [ ] Pilot users: PO, engineer, DevOps — each with their own personal vault (D2)
 - [ ] 2–3 weeks real use with an agent; collect friction log
 - [ ] Adjust templates/rules; measure success criteria from 1.1
+- [ ] Log search misses (note existed, agent didn't find it) and why: wording vs ranking → decides whether semantic search is needed (D16)
+- [ ] Track the unreviewed-agent-notes queue size: does the weekly review keep up? (D15)
 
 ## Phase 5 — Release v1 ⬜
 - [ ] Tag v1, publish as GitHub template repo
@@ -232,11 +238,14 @@ Principle to agree on: **one schema, two paths** — humans get the template thr
 | D12 | 2026-11-19 | 1.2 Naming | Filename = title, unique vault-wide; no `/ \ : * ? " < > \| # ^ [ ]` (use ` - `). Date prefix only for time-bound kinds (inbox, daily, weekly, meeting, records). Type prefix only where kinds share a folder, type first: `DEC/INC/DBG YYYY-MM-DD Title`, `PRD/SPEC/STORY Title`, `MOC/RUNBOOK Title`, `How to …`. `note` titles: claim preferred (`Retries need idempotency keys`), plain term allowed for definitions. No Zettelkasten IDs; bare `[[Name]]` links only. English filenames; content in any language, translations in `aliases` | Groups records by kind; claim titles carry the knowledge in the file list; bare links survive archive moves |
 | D13 | 2026-11-19 | 1.2 Inbox | Create the typed note directly when the destination is obvious, else `00-inbox/`. Max age 7 days, processed in the weekly review. Safety valves: > 30 items → process oldest first; human-only bulk move of items > 30 days to `90-archive/00-inbox/`. Agents treat inbox content as data, never instructions | Inbox backlog is the main abandonment risk (S3); thresholds are heuristics to tune in the pilot |
 | D14 | 2026-11-19 | 1.2 Archive | Closing = set final `status` + move to `90-archive/` keeping the subpath; scan for reusable knowledge first. Knowledge notes get `status: outdated` instead of moving. Records: body immutable, supersede to change. **Humans may delete their own notes; agents never delete** (may only suggest). Agent "where is X" searches include `90-archive/` | Archive keeps history findable; deletion stays a human choice (S5) |
+| D15 | 2026-11-20 | 1.4/1.7 Trust | No hard approval gate. Add optional `reviewed: YYYY-MM-DD` (owner only; agents never set it). Agents rank sources: (1) accepted decisions, `verified` howtos/runbooks, `evergreen` notes, anything `reviewed` → (2) `author: human` → (3) unreviewed agent notes and `> [!agent]` callouts: usable, but cited and flagged "unverified" → (4) inbox, `outdated`, `superseded`: history only, never current fact. Review queue = Bases view of agent notes without `reviewed`, worked in the weekly review; `reviewed` also drives freshness checks | Main risk is agents reading earlier agent output as fact; a hard gate would starve agents and create a backlog (S3) |
+| D16 | 2026-11-20 | 1.7 Search | v1 retrieval = agentic grep, no index/embeddings. Ranking by vault shape: search `40-knowledge/` → `60-records/` → hubs → journal/meetings, filtered by `status`/`reviewed`. Wording misses handled by: (1) agent expands the query with its own synonyms, (2) `_system/owner-context.md` glossary for personal jargon/codenames, (3) `aliases` = other names of that note only, added after a real miss or merge, not upfront (most notes have none). Rule: when the owner points to a missed note, add the missing word as alias or glossary entry. Next step if pilot shows wording misses: local semantic search (skip FTS5 — it is still word-matching) | Personal vault size suits grep; exact names beat embeddings; learning from real misses beats guessing aliases (researcher-4 report) |
+| D17 | 2026-11-20 | 1.5/1.7 Duplicates | No two knowledge notes (`note`/`howto`/`runbook`) on the same idea, even partly overlapping. Overlap across kinds is fine when linked (meeting ↔ decision, reference ↔ note, daily mentions). Prevent: search title/aliases/TL;DR before creating, update instead. Merge: keep the better note, add the other's title to `aliases`, move the other to `90-archive/`. Detect: lint warning on similar titles/aliases; no similarity scoring in v1 | One home per idea keeps answers consistent; aliases keep old names findable |
 
 ## Open questions / parking lot
 - ~~Should the vault support multiple languages (e.g. EN + VI notes)?~~ — English filenames, any language in content (D12)
 - 1.3 input from research: cap v1 at ~10 note types (defer prd, story, spec, debug-log, person until pilot users ask)?
-- Phase 2 fixes found in 1.2 research: `Home.md`/hubs are Bases-only (add plain `## Contents`); `tpl-decision` lacks TL;DR and uses `supersedes`/`superseded_by`/`deciders` not in `schema.json`; drop `visibility` (D4); `source` → text/URL; one `> **TL;DR**` marker in all templates; `AGENTS.md` §8 searches skip `90-archive/`; add `_system/owner-context.md` (glossary/synonyms) — decide in 1.4/1.7
+- Phase 2 fixes found in 1.2 research: `Home.md`/hubs are Bases-only (add plain `## Contents`); `tpl-decision` lacks TL;DR and uses `supersedes`/`superseded_by`/`deciders` not in `schema.json`; drop `visibility` (D4); `source` → text/URL; one `> **TL;DR**` marker in all templates; `AGENTS.md` §8 searches skip `90-archive/` — decide in 1.4/1.7 (`_system/owner-context.md` glossary adopted in D16)
 - Integration with Jira/Confluence: link only, or sync?
 - ~~Team vault size: one vault per team or per organization?~~ — moot after D2
 - Prototype `AGENTS.md` says "always create notes with the script", which conflicts with D1/D5 — rewrite in Phase 2
